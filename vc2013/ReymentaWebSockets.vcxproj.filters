@@ -308,6 +308,9 @@
     <ClInclude Include="..\include\ReymentaWebSocketsApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui.h">
+      <Filter>Blocks\imGui\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">
