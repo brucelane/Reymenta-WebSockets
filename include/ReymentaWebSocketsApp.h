@@ -63,8 +63,7 @@ public:
 	void update();
 	void draw();
 	void keyDown(KeyEvent event);
-	//void midiListener(midi::Message msg);
-	//void processMidiMessage(midi::Message* message);
+	void shutDown(); // is it called?
 
 private:
 	// parameters
