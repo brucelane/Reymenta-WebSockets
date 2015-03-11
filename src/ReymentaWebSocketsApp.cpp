@@ -70,6 +70,7 @@ void ReymentaWebSocketsApp::setupMidi()
 				}
 				mMidiInputs[i].isConnected = true;
 				ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName;
+				mWebSockets->write(ss.str());
 			}
 			else
 			{
@@ -421,6 +422,8 @@ void ReymentaWebSocketsApp::keyDown(KeyEvent event)
 	default:
 		break;
 	}
+	//mWebSockets->write("yo");
+
 }
 void ReymentaWebSocketsApp::shutDown()
 {
