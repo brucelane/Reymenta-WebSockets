@@ -38,6 +38,8 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "ParameterBag.h"
 // OSC
 #include "OSCWrapper.h"
+// json
+#include "JSONWrapper.h"
 // WebSockets
 #include "WebSocketsWrapper.h"
 // Utils
@@ -70,6 +72,8 @@ private:
 	ParameterBagRef				mParameterBag;
 	// osc
 	OSCRef						mOSC;
+	// json
+	JSONWrapperRef				mJson;
 	// WebSockets
 	WebSocketsRef				mWebSockets;
 	// utils

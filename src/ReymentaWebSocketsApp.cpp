@@ -24,6 +24,9 @@ void ReymentaWebSocketsApp::setup()
 	});
 	// instanciate the OSC class
 	mOSC = OSC::create(mParameterBag);
+	// instanciate the json wrapper class
+	mJson = JSONWrapper::create();
+
 	// instanciate the WebSockets class
 	mWebSockets = WebSockets::create(mParameterBag);
 	mBatchass->setup();
@@ -121,7 +124,7 @@ void ReymentaWebSocketsApp::midiListener(midi::Message msg){
 	mLogMsg = ss.str();
 	mOSC->updateAndSendOSCFloatMessage(controlType, name, normalizedValue, msg.channel);
 	mOSC->sendOSCFloatMessage(controlType, name, normalizedValue, msg.channel);
-
+	mWebSockets->write("{\"params\" :[{" + controlType);
 }
 void ReymentaWebSocketsApp::update()
 {
