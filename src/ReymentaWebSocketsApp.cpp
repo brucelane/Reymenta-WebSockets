@@ -310,23 +310,36 @@ void ReymentaWebSocketsApp::draw(){
 	ImGui::End();
 	ImGui::Begin("UI", NULL, ImVec2(300, 300));
 	{
+		stringstream sParams;
+		sParams << "{\"colors\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 		// foreground color
 		static float color[4] = { mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3], mParameterBag->controlValues[4] };
 		ImGui::ColorEdit4("f", color);
-		mParameterBag->controlValues[1] = color[0];
-		mParameterBag->controlValues[2] = color[1];
-		mParameterBag->controlValues[3] = color[2];
-		mParameterBag->controlValues[4] = color[3];
+		for (int i = 0; i < 4; i++)
+		{
+			if (mParameterBag->controlValues[i+1] != color[i])
+			{
+				sParams << ",{\"name\" : " << i + 1 << ",\"value\" : " << color[i] << "}";
+				mParameterBag->controlValues[i + 1] = color[i];
+			}
+
+		}
 		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3], mParameterBag->controlValues[4]), "fg color");
 
 		// background color
 		static float backcolor[4] = { mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7], mParameterBag->controlValues[8] };
 		ImGui::ColorEdit4("g", backcolor);
-		mParameterBag->controlValues[5] = backcolor[0];
-		mParameterBag->controlValues[6] = backcolor[1];
-		mParameterBag->controlValues[7] = backcolor[2];
-		mParameterBag->controlValues[8] = backcolor[3];
+		for (int i = 0; i < 4; i++)
+		{
+			if (mParameterBag->controlValues[i + 5] != backcolor[i])
+			{
+				sParams << ",{\"name\" : " << i + 5 << ",\"value\" : " << backcolor[i] << "}";
+				mParameterBag->controlValues[i + 5] = backcolor[i];
+			}
+
+		}
+
 		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7], mParameterBag->controlValues[8]), "bg color");
 
@@ -348,6 +361,12 @@ void ReymentaWebSocketsApp::draw(){
 		}
 		ImGui::Columns(1);
 		ImGui::EndChild();
+		sParams << "]}";
+		string strParams = sParams.str();
+		if (strParams.length() > 60)
+		{
+			mWebSockets->write(strParams);
+		}
 	}
 	ImGui::End();
 	// audio window
