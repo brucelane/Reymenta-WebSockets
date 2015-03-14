@@ -38,7 +38,7 @@ void ReymentaWebSocketsApp::setup()
 
 	// midi
 	setupMidi();
-	
+	mSeconds = 0;
 }
 void ReymentaWebSocketsApp::setupMidi()
 {
@@ -131,6 +131,13 @@ void ReymentaWebSocketsApp::update()
 	mWebSockets->update();
 	mOSC->update();
 	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta WebSockets");
+	/*if (mSeconds != (int)getElapsedSeconds())
+	{
+		mSeconds = (int)getElapsedSeconds();
+		stringstream s;
+		s << mSeconds;
+		mWebSockets->write(s.str());		
+	}*/
 }
 
 void ReymentaWebSocketsApp::draw(){
@@ -142,7 +149,7 @@ void ReymentaWebSocketsApp::draw(){
 	//imgui
 	static float f = 0.0f;
 
-	static bool showTest = false, showTheme = false, showAudio = true, showShaders = true, showOSC = true, showFps = true;
+	static bool showTest = false, showTheme = false, showAudio = true, showShaders = true, showOSC = true, showFps = true, showWS = true;
 	ImGui::NewFrame();
 
 	// start a new window
@@ -242,6 +249,8 @@ void ReymentaWebSocketsApp::draw(){
 			ImGui::SameLine();
 			ImGui::Checkbox("OSC", &showOSC);
 			ImGui::SameLine();
+			ImGui::Checkbox("WebSockets", &showWS);
+			ImGui::SameLine();
 			ImGui::Checkbox("Editor", &showTheme);
 			if (ImGui::Button("Save")) { mParameterBag->save(); }
 
@@ -267,6 +276,7 @@ void ReymentaWebSocketsApp::draw(){
 		}
 	}
 	ImGui::End();
+
 	if (showTest) ImGui::ShowTestWindow();
 
 	if (showOSC)
@@ -306,8 +316,52 @@ void ReymentaWebSocketsApp::draw(){
 			ImGui::TextUnformatted(OSClog.begin(), OSClog.end());
 			ImGui::EndChild();
 		}
+		ImGui::End();
 	}
-	ImGui::End();
+
+	if (showWS)
+	{
+		ImGui::Begin("WebSockets", NULL, ImVec2(300, 300));
+		{
+			if (mParameterBag->mIsWebSocketsServer)
+			{
+				ImGui::Text("Server %s", mParameterBag->mWebSocketsHost.c_str());
+				ImGui::SameLine();
+			}
+			else
+			{
+				ImGui::Text("Client %s", mParameterBag->mWebSocketsHost.c_str());
+				ImGui::SameLine();
+			}
+			ImGui::Text(" on port %d", mParameterBag->mWebSocketsPort);
+			if (ImGui::Button("Send"))
+			{
+				mSeconds = (int)getElapsedSeconds();
+				stringstream s;
+				s << mSeconds;
+				mWebSockets->write(s.str());
+			}
+			static ImGuiTextBuffer WSlog;
+			static int lines = 0;
+			if (ImGui::Button("Clear")) { WSlog.clear(); lines = 0; }
+			ImGui::SameLine();
+			ImGui::Text("Buffer contents: %d lines, %d bytes", lines, WSlog.size());
+
+			if (mParameterBag->newWSMsg)
+			{
+				mParameterBag->newWSMsg = false;
+				WSlog.append(mParameterBag->WSMsg.c_str());
+				lines++;
+				if (lines > 5) { WSlog.clear(); lines = 0; }
+			}
+			ImGui::BeginChild("WSlog");
+			ImGui::TextUnformatted(WSlog.begin(), WSlog.end());
+			ImGui::EndChild();
+		}
+		ImGui::End();
+	}
+
+
 	ImGui::Begin("UI", NULL, ImVec2(300, 300));
 	{
 		stringstream sParams;
@@ -367,8 +421,8 @@ void ReymentaWebSocketsApp::draw(){
 		{
 			mWebSockets->write(strParams);
 		}
+		ImGui::End();
 	}
-	ImGui::End();
 	// audio window
 	if (showAudio)
 	{

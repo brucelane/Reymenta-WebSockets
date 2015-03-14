@@ -90,4 +90,6 @@ private:
 	// log
 	string						mLogMsg;
 	bool						newLogMsg;
+	// misc
+	int							mSeconds;
 };
