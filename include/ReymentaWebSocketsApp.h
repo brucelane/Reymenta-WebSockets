@@ -65,7 +65,7 @@ public:
 	void update();
 	void draw();
 	void keyDown(KeyEvent event);
-	void shutDown(); // is it called?
+	void shutdown(); 
 
 private:
 	// parameters

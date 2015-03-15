@@ -501,7 +501,7 @@ void ReymentaWebSocketsApp::keyDown(KeyEvent event)
 	//mWebSockets->write("yo");
 
 }
-void ReymentaWebSocketsApp::shutDown()
+void ReymentaWebSocketsApp::shutdown()
 {
 	// TODO: not called
 	mParameterBag->save();
